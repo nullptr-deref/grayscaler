@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(dirview VERSION 0.1 LANGUAGES CXX)
+project(greyscaler VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -16,42 +16,42 @@ find_package(sdbus-c++ REQUIRED)
 
 set(PROJECT_SOURCES
         main.cpp
-        dirview.cpp
-        dirview.h
+        greyscaler.cpp
+        greyscaler.h
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(dirview
+    qt_add_executable(greyscaler
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
     )
 # Define target properties for Android with Qt 6 as:
-#    set_property(TARGET dirview APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
+#    set_property(TARGET greyscaler APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
 #                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
 # For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
 else()
     if(ANDROID)
-        add_library(dirview SHARED
+        add_library(greyscaler SHARED
             ${PROJECT_SOURCES}
         )
 # Define properties for Android with Qt 5 after find_package() calls as:
 #    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
     else()
-        add_executable(dirview
+        add_executable(greyscaler
             ${PROJECT_SOURCES}
         )
     endif()
 endif()
 
-target_link_libraries(dirview PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(greyscaler PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
 # explicit, fixed bundle identifier manually though.
 if(${QT_VERSION} VERSION_LESS 6.1.0)
-  set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.dirview)
+  set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.greyscaler)
 endif()
-set_target_properties(dirview PROPERTIES
+set_target_properties(greyscaler PROPERTIES
     ${BUNDLE_ID_OPTION}
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
@@ -60,12 +60,12 @@ set_target_properties(dirview PROPERTIES
 )
 
 include(GNUInstallDirs)
-install(TARGETS dirview
+install(TARGETS greyscaler
     BUNDLE DESTINATION .
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
 if(QT_VERSION_MAJOR EQUAL 6)
-    qt_finalize_executable(dirview)
+    qt_finalize_executable(greyscaler)
 endif()
