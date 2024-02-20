@@ -13,6 +13,8 @@ find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 find_package(sdbus-c++ REQUIRED)
 
+add_subdirectory(backend)
+
 set(PROJECT_SOURCES
         main.cpp
         grayscaler.cpp
