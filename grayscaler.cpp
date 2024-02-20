@@ -1,4 +1,6 @@
-#include "greyscaler.h"
+#include "grayscaler.hpp"
+
+#include <sdbus-c++/sdbus-c++.h>
 
 #include <QDir>
 #include <QFileDialog>
@@ -8,7 +10,13 @@
 #include <QPushButton>
 #include <QStringList>
 
-Greyscaler::Greyscaler(QWidget *parent)
+#include <iostream>
+
+constexpr char const *interface = "org.rt.SharingService";
+constexpr char const *dest = "org.rt.sharing";
+constexpr char const *objPath = "/org/rt/router";
+
+Grayscaler::Grayscaler(QWidget *parent)
 : QWidget(parent), m_imageLabel(new QLabel) {
     auto topLayout = new QVBoxLayout();
     auto browseLayout = new QHBoxLayout();
@@ -37,10 +45,10 @@ Greyscaler::Greyscaler(QWidget *parent)
             });
     QPushButton *convertButton = new QPushButton("Greyscale with...");
     convertButton->setVisible(false);
-    connect(this, &Greyscaler::imageLoaded, convertButton, [convertButton]() {
+    connect(this, &Grayscaler::imageLoaded, convertButton, [convertButton]() {
         convertButton->setVisible(true);
     });
-    connect(convertButton, &QPushButton::clicked, this, &Greyscaler::listApps);
+    connect(convertButton, &QPushButton::clicked, this, &Grayscaler::showAppsList);
 
     browseLayout->addWidget(selectLabel);
     browseLayout->addWidget(browseButton);
@@ -48,4 +56,15 @@ Greyscaler::Greyscaler(QWidget *parent)
     topLayout->addWidget(m_imageLabel);
     topLayout->addWidget(convertButton);
     setLayout(topLayout);
+
+    m_sharingProxy = sdbus::createProxy(dest, objPath);
+    m_sharingProxy->finishRegistration();
+}
+
+void Grayscaler::showAppsList() {
+    std::vector<std::string> endpointsList;
+    m_sharingProxy->callMethod("getEndpoints").onInterface(interface).storeResultsTo(endpointsList);
+    for (const auto &endpoint : endpointsList) {
+        std::cout << endpoint << '\n';
+    }
 }
